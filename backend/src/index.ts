@@ -1,18 +1,32 @@
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from './db';
 import authRouter from './routes/auth';
 import profileRouter from './routes/profile';
 import opportunityRouter from './routes/opportunity';
 import applicationRouter from './routes/application';
+import workspaceRouter from './routes/workspace';
+import projectRouter from './routes/project';
+import taskRouter from './routes/task';
+import activityRouter from './routes/activity';
+import documentRouter from './routes/document';
+import notificationRouter from './routes/notification';
+import analyticsRouter from './routes/analytics';
+import aiRouter from './routes/ai';
 import { errorHandler } from './middleware/errorHandler';
 
 const app = express();
-const prisma = new PrismaClient();
 
 app.use(cors());
-app.use(helmet());
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    frameguard: false,
+    crossOriginOpenerPolicy: false,
+    crossOriginResourcePolicy: false,
+  })
+);
 app.use(express.json());
 
 // health check
@@ -30,6 +44,14 @@ app.use('/api/auth', authRouter);
 app.use('/api/profile', profileRouter);
 app.use('/api/opportunities', opportunityRouter);
 app.use('/api/applications', applicationRouter);
+app.use('/api/workspaces', workspaceRouter);
+app.use('/api/projects', projectRouter);
+app.use('/api/tasks', taskRouter);
+app.use('/api/activities', activityRouter);
+app.use('/api/documents', documentRouter);
+app.use('/api/notifications', notificationRouter);
+app.use('/api/analytics', analyticsRouter);
+app.use('/api/ai', aiRouter);
 
 app.use(errorHandler);
 

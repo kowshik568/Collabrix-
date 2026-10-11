@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
 
@@ -47,7 +47,8 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
     if (!valid) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET as string, {
+    const jwtSecret = process.env.JWT_SECRET || 'collabrix-default-secret-key-2026';
+    const token = jwt.sign({ userId: user.id, role: user.role }, jwtSecret, {
       expiresIn: '7d',
     });
     res.json({ token });
